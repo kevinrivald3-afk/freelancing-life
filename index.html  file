@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FREELANCING LIFE — Next Gen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg1: #0f172a;
+            --accent: linear-gradient(90deg, #7c3aed, #06b6d4)
+        }
+
+        html,
+        body,
+        #app {
+            height: 100%
+        }
+
+        body {
+            font-family: Inter, system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            margin: 0;
+            background: radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.03), transparent 10%), linear-gradient(180deg, #0f172a 0%, #071028 100%);
+        }
+
+        .illusion {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: .08;
+            filter: blur(6px)
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.06));
+            background-size: 200% 100%;
+            animation: shimmer 2.4s linear infinite
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        .fadein {
+            animation: fadein .8s ease forwards
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .page {
+            display: none
+        }
+
+        .page.active {
+            display: block
+        }
+
+        .glass {
+            backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+
+        .btn {
+            transition: all .18s
+        }
+
+        .small-muted {
+            font-size: 12px;
+            color: #a8b3c7
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.45);
+            padding: 10px;
+            text-align: center;
+            color: #d1d5db;
+            font-size: 13px
+        }
+
+        /* responsive scrollbar for lists */
+        .scroller {
+            max-height: 420px;
+            overflow: auto
+        }
+    </style>
+</head>
+
+<body>
+    <!-- World of Illusion loading overlay -->
+    <div id="loading" class="fixed inset-0 z-50 flex items-center justify-center text-center text-white">
+        <div>
+            <div class="relative w-80 h-80 rounded-full overflow-hidden">
+                <canvas id="illusionCanvas" width="320" height="320" class="absolute inset-0"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <h1 class="text-4xl font-extrabold tracking-tight">FREELANCING LIFE</h1>
+                    <p class="mt-3 text-sm opacity-80 shimmer">enter the world of illusion — work beyond limits</p>
+                </div>
+            </div>
+            <p class="mt-6 text-sm opacity-80">Preparing your next-level freelancing universe...</p>
+        </div>
+    </div>
+
+    <!-- App -->
+    <div id="app" class="hidden min-h-screen text-white relative z-10">
+        <!-- Top bar -->
+        <div class="p-4 flex items-center justify-between glass">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-teal-400 flex items-center justify-center font-extrabold">FL</div>
+                <div>
+                    <div class="text-xl font-bold">FREELANCING LIFE</div>
+                    <div class="text-sm small-muted">A New Dimension of Work</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div id="currentUserDisplay" class="small-muted">Guest</div>
+                <button id="toggleTheme" class="btn px-3 py-1 rounded-md glass">Dark</button>
+            </div>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1 glass p-4 rounded-xl space-y-4">
+                <div class="text-sm font-semibold">Navigation</div>
+                <nav class="flex flex-col gap-2 mt-2">
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('home')">Home</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('tasks')">Tasks</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('messages')">Messages</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('wallet')">Wallet</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('profile')">Profile</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('analytics')">Analytics</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('community')">Community</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('clients')">Clients</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('jobs')">Jobs</button>
+                    <button class="btn text-left p-2 rounded-md hover:bg-white/5" onclick="nav('settings')">Settings</button>
+                </nav>
+
+                <div class="mt-4 border-t pt-3 small-muted text-sm">
+                    Rivald Freelancing Life ©2025
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main class="lg:col-span-4 space-y-6">
+                <!-- Home -->
+                <section id="page-home" class="page card p-6 rounded-xl active fadein">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-2xl font-bold">Welcome to the Future of Freelancing</h2>
+                            <p class="small-muted mt-1">AI-match, gamified leaderboards, escrow, community, and beyond.</p>
+                            <div class="mt-4 flex gap-3">
+                                <button class="btn px-4 py-2 rounded-md bg-indigo-600" onclick="nav('tasks')">Explore Tasks</button>
+                                <button class="btn px-4 py-2 rounded-md bg-green-600" onclick="nav('profile')">Complete Profile</button>
+                            </div>
+                        </div>
+                        <div class="w-60 text-right">
+                            <div class="text-sm small-muted">Your XP</div>
+                            <div id="xpBar" class="mt-2 w-full bg-white/6 rounded-full p-1">
+                                <div id="xpFill" style="width:10%" class="bg-gradient-to-r from-yellow-400 to-pink-500 h-2 rounded-full"></div>
+                            </div>
+                            <div class="mt-4 text-sm small-muted">Leaderboard Top</div>
+                            <div id="leaderboardMini" class="mt-2"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tasks -->
+                <section id="page-tasks" class="page card p-6 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold">Task Marketplace</h3>
+                        <div class="flex gap-2 items-center">
+                            <input id="searchTasks" placeholder="Search tasks..." class="px-3 py-2 rounded-md bg-white/5 small-muted" />
+                            <select id="filterCat" class="px-3 py-2 rounded-md bg-white/5 small-muted">
+                                <option value="">All categories</option>
+                                <option>Design</option>
+                                <option>Writing</option>
+                                <option>Development</option>
+                                <option>Marketing</option>
+                                <option>Data</option>
+                                <option>Other</option>
+                            </select>
+                            <button class="px-3 py-2 rounded-md bg-white/5" onclick="generateTasks(120)">Refresh Tasks</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid lg:grid-cols-3 gap-4">
+                        <div class="col-span-2">
+                            <div id="tasksContainer" class="scroller space-y-4 p-2"></div>
+                        </div>
+                        <aside class="space-y-4">
+                            <div class="card p-4 rounded-md">
+                                <div class="text-sm small-muted">AI Match</div>
+                                <div id="aiMatch" class="mt-2 text-sm">No profile yet — complete profile to get AI task suggestions.</div>
+                            </div>
+                            <div class="card p-4 rounded-md">
+                                <div class="text-sm small-muted">Filters</div>
+                                <div class="mt-2 text-sm small-muted">Sort by</div>
+                                <select id="sortBy" class="w-full px-3 py-2 rounded-md bg-white/5 small-muted">
+                                    <option value="latest">Latest</option>
+                                    <option value="budgetHigh">Budget: High → Low</option>
+                                    <option value="closingSoon">Closing soon</option>
+                                </select>
+                            </div>
+                            <div class="card p-4 rounded-md">
+                                <div class="text-sm small-muted">Quick Wallet</div>
+                                <div id="quickWallet" class="mt-2">Ksh.0</div>
+                                <div class="mt-3 flex gap-2">
+                                    <button class="px-3 py-2 rounded-md bg-pink-600" onclick="openTopUp()">Top-up</button>
+                                    <button class="px-3 py-2 rounded-md bg-emerald-600" onclick="nav('wallet')">Wallet</button>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </section>
+
+                <!-- Messages -->
+                <section id="page-messages" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Messages</h3>
+                    <div class="mt-4 grid grid-cols-3 gap-4">
+                        <div class="col-span-1 p-2 card rounded-md scroller" id="msgList"></div>
+                        <div class="col-span-2 card rounded-md p-4">
+                            <div id="msgThread" class="scroller h-72 p-2"></div>
+                            <div class="mt-3 flex gap-2">
+                                <input id="msgInput" placeholder="Type a message..." class="flex-1 px-3 py-2 rounded-md bg-white/5" />
+                                <button class="px-4 py-2 rounded-md bg-indigo-600" onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Wallet -->
+                <section id="page-wallet" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Wallet & Escrow</h3>
+                    <div class="mt-4 grid grid-cols-2 gap-4">
+                        <div class="p-4 card rounded-md">
+                            <div class="text-sm small-muted">Balance</div>
+                            <div id="walletBalance" class="text-2xl font-bold mt-2">Ksh.0</div>
+                            <div class="mt-3 small-muted">Top-up via MPESA — Copy till and pay: <b id="tillNumber">6806157</b></div>
+                            <div class="mt-3 flex gap-2">
+                                <button class="px-3 py-2 rounded-md bg-pink-600" onclick="copyTill()">Copy Till</button>
+                                <button class="px-3 py-2 rounded-md bg-indigo-600" onclick="openTopUp()">Simulate Topup</button>
+                            </div>
+                            <div class="mt-3 small-muted text-xs">Note: This demo simulates wallet top-ups locally. Real MPESA integration requires backend Daraja STK Push.</div>
+                        </div>
+
+                        <div class="p-4 card rounded-md">
+                            <div class="text-sm small-muted">Escrow</div>
+                            <div class="mt-2 text-sm">When clients fund a task, funds are held in escrow until delivery & approval.</div>
+                            <div id="escrowInfo" class="mt-3 text-sm">No escrow activity yet</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile -->
+                <section id="page-profile" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Profile</h3>
+                    <form id="profileForm" class="mt-4 grid grid-cols-2 gap-4">
+                        <input name="name" placeholder="Your full name" class="col-span-1 px-3 py-2 rounded-md bg-white/5" />
+                        <input name="email" placeholder="Email" class="col-span-1 px-3 py-2 rounded-md bg-white/5" />
+                        <input name="phone" placeholder="Phone (254...)" class="col-span-1 px-3 py-2 rounded-md bg-white/5" />
+                        <select name="category" class="col-span-1 px-3 py-2 rounded-md bg-white/5">
+                            <option>Development</option>
+                            <option>Design</option>
+                            <option>Writing</option>
+                            <option>Marketing</option>
+                            <option>Data</option>
+                        </select>
+                        <textarea name="bio" placeholder="Short bio" class="col-span-2 px-3 py-2 rounded-md bg-white/5"></textarea>
+                        <div class="col-span-2 flex gap-3">
+                            <button type="button" onclick="saveProfile()" class="px-4 py-2 rounded-md bg-green-600">Save Profile</button>
+                            <button type="button" onclick="logout()" class="px-4 py-2 rounded-md bg-gray-600">Logout</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Analytics -->
+                <section id="page-analytics" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Analytics</h3>
+                    <div class="mt-4 grid grid-cols-3 gap-4">
+                        <div class="card p-4 rounded-md">
+                            <div class="small-muted">Earnings (simulated)</div>
+                            <div id="earningsStat" class="text-2xl font-bold mt-2">Ksh.0</div>
+                        </div>
+                        <div class="card p-4 rounded-md">
+                            <div class="small-muted">Bids Placed</div>
+                            <div id="bidsStat" class="text-2xl font-bold mt-2">0</div>
+                        </div>
+                        <div class="card p-4 rounded-md">
+                            <div class="small-muted">Tasks Won</div>
+                            <div id="winsStat" class="text-2xl font-bold mt-2">0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Community -->
+                <section id="page-community" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Community Hub</h3>
+                    <div class="mt-4 grid grid-cols-3 gap-4">
+                        <div class="col-span-2 card p-4 scroller" id="communityFeed"></div>
+                        <div class="card p-4">
+                            <div class="text-sm small-muted">Post to community</div>
+                            <textarea id="communityInput" class="w-full px-3 py-2 rounded-md bg-white/5 mt-2"></textarea>
+                            <button class="mt-3 px-4 py-2 rounded-md bg-indigo-600" onclick="postCommunity()">Post</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Clients -->
+                <section id="page-clients" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Clients</h3>
+                    <div id="clientsList" class="mt-4 scroller"></div>
+                </section>
+
+                <!-- Jobs -->
+                <section id="page-jobs" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Jobs & Applications</h3>
+                    <div id="appliedList" class="mt-4 scroller"></div>
+                </section>
+
+                <!-- Settings -->
+                <section id="page-settings" class="page card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold">Settings</h3>
+                    <div class="mt-4 space-y-3 small-muted">
+                        <div>Theme toggle (local)</div>
+                        <div><button onclick="toggleTheme()" class="px-3 py-1 rounded-md bg-white/5">Toggle Theme</button></div>
+                        <div>Data is stored locally for demo purposes. For production, use a secure backend and database.</div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <footer>Rivald Freelancing Life ©2025</footer>
+    </div>
+
+    <!-- TOAST / MODALS -->
+    <div id="modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:60">
+        <div id="modalBox" style="background:#0b1220;padding:20px;border-radius:12px;color:#fff;min-width:320px"></div>
+    </div>
+
+    <script>
+        /* -------------------------
+   Tiny SPA + app logic
+   ------------------------- */
+        const pages = ['home', 'tasks', 'messages', 'wallet', 'profile', 'analytics', 'community', 'clients', 'jobs', 'settings'];
+
+        function nav(p) {
+            pages.forEach(pg => document.getElementById('page-' + pg).classList.remove('active'));
+            document.getElementById('page-' + p).classList.add('active');
+            if (p === 'tasks') renderTasks();
+            if (p === 'messages') renderMessages();
+            if (p === 'community') renderCommunity();
+            if (p === 'clients') renderClients();
+            if (p === 'wallet') renderWallet();
+            if (p === 'profile') renderProfile();
+            if (p === 'analytics') renderAnalytics();
+        }
+
+        function showModal(html, timeout = 0) {
+            document.getElementById('modalBox').innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+            if (timeout) setTimeout(() => document.getElementById('modal').style.display = 'none', timeout)
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none'
+        }
+
+        /* -------------------------
+           Loading (World of Illusion) particle canvas
+           ------------------------- */
+        const canvas = document.getElementById('illusionCanvas');
+        const ctx = canvas && canvas.getContext('2d');
+        let particles = [];
+
+        function initParticles() {
+            if (!ctx) return;
+            const W = canvas.width,
+                H = canvas.height;
+            particles = Array.from({
+                length: 80
+            }).map(() => ({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: 1 + Math.random() * 4,
+                vx: -0.4 + Math.random() * 0.8,
+                vy: -0.4 + Math.random() * 0.8,
+                hue: Math.random() * 360,
+                alpha: 0.1 + Math.random() * 0.3
+            }));
+            animateParticles();
+        }
+
+        function animateParticles() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < -10) p.x = canvas.width + 10;
+                if (p.x > canvas.width + 10) p.x = -10;
+                if (p.y < -10) p.y = canvas.height + 10;
+                if (p.y > canvas.height + 10) p.y = -10;
+                const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+                g.addColorStop(0, `hsla(${p.hue},80%,60%,${p.alpha})`);
+                g.addColorStop(1, `transparent`);
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+
+        /* -------------------------
+           Data layer (localStorage)
+           ------------------------- */
+        const KEY = {
+            USERS: 'fl_users_v2',
+            CUR: 'fl_current_v2',
+            BIDS: 'fl_bids_v2',
+            COMMUNITY: 'fl_comm_v2',
+            MESSAGES: 'fl_msgs_v2'
+        };
+        if (!localStorage.getItem(KEY.USERS)) localStorage.setItem(KEY.USERS, JSON.stringify([]));
+        if (!localStorage.getItem(KEY.BIDS)) localStorage.setItem(KEY.BIDS, JSON.stringify([]));
+        if (!localStorage.getItem(KEY.COMMUNITY)) localStorage.setItem(KEY.COMMUNITY, JSON.stringify([]));
+        if (!localStorage.getItem(KEY.MESSAGES)) localStorage.setItem(KEY.MESSAGES, JSON.stringify([]));
+
+        function read(k) {
+            return JSON.parse(localStorage.getItem(k) || '[]')
+        }
+
+        function write(k, v) {
+            localStorage.setItem(k, JSON.stringify(v))
+        }
+
+        /* -------------------------
+           Auto-generate tasks (fresh on every refresh)
+           ------------------------- */
+        let TASKS = [];
+        const categories = ['Design', 'Writing', 'Development', 'Marketing', 'Data', 'Other'];
+        const taskTitles = [
+            'Design a modern brand identity',
+            'Write SEO blog about AI',
+            'Build responsive landing page',
+            'Create product mockups',
+            'Social media campaign pack',
+            'Data cleaning & analysis',
+            'Mobile app prototype',
+            'Create explainer video',
+            'WordPress e-commerce site',
+            'Automation script in Python',
+            'Translate content to Swahili',
+            'Brand voice & copywriting',
+            'UX audit & report',
+            'Logo + style guide',
+            'Email marketing funnel setup'
+        ];
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+
+        function makeTask(i) {
+            const cat = categories[Math.floor(Math.random() * categories.length)];
+            const title = taskTitles[Math.floor(Math.random() * taskTitles.length)] + (Math.random() < 0.35 ? ` — ${['Pro','Lite','Express'][randomInt(0,2)]}` : '');
+            const budget = [500, 1000, 1500, 2000, 3000, 5000, 8000][randomInt(0, 6)];
+            const posted = new Date();
+            const due = new Date();
+            due.setDate(posted.getDate() + 7);
+            return {
+                id: 't_' + i + '_' + Date.now().toString(36).slice(4, 9),
+                title,
+                category: cat,
+                budget,
+                posted: posted.toISOString().slice(0, 10),
+                due: due.toISOString().slice(0, 10),
+                desc: `A short brief for "${title}". Deliver quality work. Budget: Ksh.${budget}.`,
+                client: ['Acme', 'Beta', 'Gamma', 'StudioX', 'SoloClient'][randomInt(0, 4)],
+                bids: []
+            }
+        }
+
+        function generateTasks(n = 120) {
+            TASKS = [];
+            for (let i = 0; i < n; i++) TASKS.push(makeTask(i));
+            renderTasks();
+        }
+        generateTasks(120);
+
+        /* -------------------------
+           Render tasks UI
+           ------------------------- */
+        function renderTasks() {
+            const cont = document.getElementById('tasksContainer');
+            cont.innerHTML = '';
+            const search = document.getElementById('searchTasks').value.toLowerCase();
+            const cat = document.getElementById('filterCat').value;
+            const sort = document.getElementById('sortBy').value;
+            let list = TASKS.slice();
+
+            if (search) list = list.filter(t => t.title.toLowerCase().includes(search) || t.desc.toLowerCase().includes(search));
+            if (cat) list = list.filter(t => t.category === cat);
+
+            if (sort === 'budgetHigh') list.sort((a, b) => b.budget - a.budget);
+            if (sort === 'closingSoon') list.sort((a, b) => new Date(a.due) - new Date(b.due));
+            if (sort === 'latest') list.sort((a, b) => b.id.localeCompare(a.id));
+
+            list.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'p-4 rounded-md card';
+                div.innerHTML = `<div class="flex justify-between items-start">
+      <div>
+        <div class="font-semibold">${escape(t.title)}</div>
+        <div class="text-xs small-muted">Posted: ${t.posted} • Due: ${t.due} • ${t.category} • Client: ${t.client}</div>
+        <div class="mt-2 text-sm">${escape(t.desc)}</div>
+      </div>
+      <div class="text-right">
+        <div class="text-lg font-bold">Ksh.${t.budget}</div>
+        <div class="mt-3 flex flex-col gap-2">
+          <button class="px-3 py-1 rounded-md bg-indigo-600" onclick="attemptBid('${t.id}')">Bid (Ksh.150)</button>
+          <button class="px-3 py-1 rounded-md bg-white/5" onclick="viewTask('${t.id}')">View details</button>
+        </div>
+      </div>
+    </div>`;
+                cont.appendChild(div);
+            });
+            document.getElementById('quickWallet').innerText = getBalanceText();
+        }
+
+        /* -------------------------
+           Simple user & auth management (local)
+           ------------------------- */
+        function currentUser() {
+            return JSON.parse(localStorage.getItem(KEY.CUR) || 'null')
+        }
+
+        function setCurrentUser(u) {
+            localStorage.setItem(KEY.CUR, JSON.stringify(u));
+            renderProfile();
+            renderWallet();
+            document.getElementById('currentUserDisplay').innerText = u ? u.name : 'Guest';
+        }
+
+        function logout() {
+            localStorage.removeItem(KEY.CUR);
+            setCurrentUser(null);
+            showModal(`<div style="text-align:center"><h3>Logged out</h3><button onclick="closeModal()">Close</button></div>`, 1500);
+        }
+
+        function seedDemoUser() {
+            const users = read(KEY.USERS);
+            if (users.length === 0) {
+                const u = {
+                    id: 'u_demo',
+                    name: 'Kevin Rivald',
+                    email: 'kevinr@example.com',
+                    phone: '2547xxxxxxx',
+                    wallet: 1000,
+                    verified: true,
+                    xp: 250,
+                    badges: ['Pioneer']
+                };
+                users.push(u);
+                write(KEY.USERS, users);
+                setCurrentUser(u);
+            }
+        }
+        seedDemoUser();
+
+        /* -------------------------
+           Bid flow: Ksh.150 deduction
+           ------------------------- */
+        function getBalance() {
+            const u = currentUser();
+            return u ? (u.wallet || 0) : 0
+        }
+
+        function getBalanceText() {
+            return 'Ksh.' + getBalance()
+        }
+
+        function attemptBid(taskId) {
+            const u = currentUser();
+            if (!u) return showModal(`<div style="text-align:center"><h3>Not signed in</h3><p class="small-muted">Please register or login to bid</p><div class="mt-4"><button class="px-3 py-2 bg-indigo-600 rounded-md" onclick="closeModal(); openAuth('register')">Register</button></div></div>`);
+            if (!u.verified) return showModal(`<div style="text-align:center"><h3>Account not verified</h3><p class="small-muted">Please complete registration and pay Ksh.100 to Till: <b id="tillInline">6806157</b></p><div class="mt-4"><button class="px-3 py-2 bg-green-600 rounded-md" onclick="copyTill(); closeModal()">Copy Till</button></div></div>`);
+            if (getBalance() < 150) {
+                return showModal(`<div style="text-align:center"><h3>Insufficient Wallet</h3><p class="small-muted">Bidding requires Ksh.150. Top-up using Till: <b>6806157</b></p><div class="mt-4 flex gap-2 justify-center"><button class="px-3 py-2 bg-pink-600 rounded-md" onclick="copyTill();closeModal()">Copy Till</button><button class="px-3 py-2 bg-indigo-600 rounded-md" onclick="openTopUp();closeModal()">Simulate Top-up</button></div></div>`);
+            }
+            // deduct fee and place bid
+            const users = read(KEY.USERS);
+            const uIdx = users.findIndex(x => x.id === u.id);
+            users[uIdx].wallet -= 150;
+            users[uIdx].xp = (users[uIdx].xp || 0) + 8;
+            write(KEY.USERS, users);
+            setCurrentUser(users[uIdx]);
+
+            const bids = read(KEY.BIDS);
+            bids.push({
+                id: 'b_' + Date.now(),
+                taskId,
+                userId: u.id,
+                amount: (randomInt(500, 3000)),
+                message: 'I will deliver high quality.'
+            });
+            write(KEY.BIDS, bids);
+
+            // attach to TASKS (runtime only)
+            const t = TASKS.find(t => t.id === taskId);
+            if (t) t.bids.push(u.id);
+            renderTasks();
+            renderAnalytics();
+
+            showModal(`<div style="text-align:center"><h3>Bid placed</h3><p class="small-muted">Ksh.150 deducted as bid fee. Good luck!</p></div>`, 1600);
+        }
+
+        /* -------------------------
+           Top-up (simulate) & copy till
+           ------------------------- */
+        function copyTill() {
+            navigator.clipboard.writeText('6806157');
+            showModal('<div style="text-align:center"><h3>Till copied</h3><p class="small-muted">Paste in MPESA paybill/till to complete payment.</p></div>', 1500)
+        }
+
+        function openTopUp() {
+            const html = `<div style="text-align:left"><h3>Simulate Top-up</h3>
+  <p class="small-muted">Enter amount you want to credit to your wallet (demo only)</p>
+  <input id="topupAmt" placeholder="e.g. 500" class="w-full px-3 py-2 rounded-md bg-white/5" />
+  <div class="mt-3 flex gap-2"><button class="px-3 py-2 bg-indigo-600 rounded-md" onclick="doTopUp()">Top-up</button><button class="px-3 py-2 bg-gray-600 rounded-md" onclick="closeModal()">Cancel</button></div></div>`;
+            showModal(html);
+        }
+
+        function doTopUp() {
+            const amt = Number(document.getElementById('topupAmt').value || 0);
+            if (amt <= 0) return alert('Enter amount');
+            const users = read(KEY.USERS);
+            const cur = currentUser();
+            if (!cur) return alert('Sign in first');
+            const idx = users.findIndex(u => u.id === cur.id);
+            users[idx].wallet = (users[idx].wallet || 0) + amt;
+            write(KEY.USERS, users);
+            setCurrentUser(users[idx]);
+            closeModal();
+            showModal(`<div style="text-align:center"><h3>Ksh.${amt} credited</h3></div>`, 1500);
+        }
+
+        /* -------------------------
+           Messages, community, profile, clients
+           ------------------------- */
+        function renderMessages() {
+            const msgs = read(KEY.MESSAGES);
+            const ml = document.getElementById('msgList');
+            ml.innerHTML = msgs.length ? msgs.map(m => `<div class="p-2 rounded-md mb-2 card"><b>${escape(m.fromName||'System')}</b><div class="text-xs small-muted">${new Date(m.time).toLocaleString()}</div><div class="text-sm mt-1">${escape(m.text)}</div></div>`).join('') : '<div class="small-muted">No messages</div>';
+            document.getElementById('msgThread').innerHTML = '<div class="small-muted">Select a message to read</div>';
+        }
+
+        function sendMessage() {
+            const txt = document.getElementById('msgInput').value.trim();
+            if (!txt) return;
+            const msgs = read(KEY.MESSAGES);
+            const u = currentUser();
+            msgs.unshift({
+                id: 'm_' + Date.now(),
+                from: u ? u.id : 'guest',
+                fromName: u ? u.name : 'Guest',
+                text: txt,
+                time: Date.now()
+            });
+            write(KEY.MESSAGES, msgs);
+            document.getElementById('msgInput').value = '';
+            renderMessages();
+        }
+
+        function renderCommunity() {
+            const posts = read(KEY.COMMUNITY);
+            const node = document.getElementById('communityFeed');
+            node.innerHTML = posts.length ? posts.map(p => `<div class="p-3 card rounded-md mb-3"><div class="text-sm small-muted">${escape(p.by)} • ${new Date(p.time).toLocaleString()}</div><div class="mt-2">${escape(p.text)}</div></div>`).join('') : '<div class="small-muted">No posts yet</div>';
+        }
+
+        function postCommunity() {
+            const txt = document.getElementById('communityInput').value.trim();
+            if (!txt) return alert('Write something');
+            const comm = read(KEY.COMMUNITY);
+            const u = currentUser();
+            comm.unshift({
+                id: 'c_' + Date.now(),
+                by: u ? u.name : 'Guest',
+                text: txt,
+                time: Date.now()
+            });
+            write(KEY.COMMUNITY, comm);
+            document.getElementById('communityInput').value = '';
+            renderCommunity();
+        }
+
+        function renderClients() {
+            // simple client list from tasks
+            const clients = Array.from(new Set(TASKS.map(t => t.client)));
+            document.getElementById('clientsList').innerHTML = clients.map(c => `<div class="p-3 card rounded-md mb-2"><b>${escape(c)}</b><div class="small-muted">Clients on platform</div></div>`).join('');
+        }
+
+        /* -------------------------
+           Profile, analytics, leaderboard
+           ------------------------- */
+        function saveProfile() {
+            const f = document.getElementById('profileForm');
+            const fields = new FormData(f);
+            const obj = {
+                name: fields.get('name'),
+                email: fields.get('email'),
+                phone: fields.get('phone'),
+                category: fields.get('category'),
+                bio: fields.get('bio')
+            };
+            let users = read(KEY.USERS);
+            const cur = currentUser();
+            if (!cur) return showModal('<div style="text-align:center">Sign in to save profile</div>', 1200);
+            const idx = users.findIndex(u => u.id === cur.id);
+            users[idx] = {
+                ...users[idx],
+                ...obj
+            };
+            write(KEY.USERS, users);
+            setCurrentUser(users[idx]);
+            showModal('<div style="text-align:center"><h3>Profile saved</h3></div>', 1200);
+            // AI match calc (simulated)
+            const matches = TASKS.filter(t => t.category === users[idx].category).slice(0, 3).map(t => t.title);
+            document.getElementById('aiMatch').innerText = matches.length ? matches.join(' • ') : 'No direct matches yet';
+        }
+
+        function renderProfile() {
+            const cur = currentUser();
+            if (!cur) {
+                document.getElementById('profileForm').reset();
+                return
+            }
+            const f = document.getElementById('profileForm');
+            f.name.value = cur.name || '';
+            f.email.value = cur.email || '';
+            f.phone.value = cur.phone || '';
+            f.bio.value = cur.bio || '';
+            f.category.value = cur.category || 'Development';
+            // show mini leaderboard
+            const users = read(KEY.USERS).slice().sort((a, b) => (b.xp || 0) - (a.xp || 0)).slice(0, 3);
+            document.getElementById('leaderboardMini').innerHTML = users.map(u => `<div class="text-sm">${escape(u.name)} <span class="small-muted">(${u.xp||0} XP)</span></div>`).join('');
+        }
+
+        function renderAnalytics() {
+            const bids = read(KEY.BIDS);
+            document.getElementById('bidsStat').innerText = bids.length;
+            const users = read(KEY.USERS);
+            const totalEarnings = users.reduce((s, u) => s + (u.earnings || 0 || 0), 0);
+            document.getElementById('earningsStat').innerText = 'Ksh.' + totalEarnings;
+            const wins = 0;
+            document.getElementById('winsStat').innerText = wins;
+        }
+
+        /* -------------------------
+           View task details
+           ------------------------- */
+        function viewTask(id) {
+            const t = TASKS.find(x => x.id === id);
+            if (!t) return;
+            const bidders = read(KEY.BIDS).filter(b => b.taskId === id).map(b => `<div class="p-2 rounded-md mb-2 card"><div class="text-sm"><b>${escape(getUserName(b.userId))}</b> • Ksh.${b.amount}</div><div class="text-sm small-muted mt-1">${escape(b.message)}</div></div>`).join('');
+            const html = `<div style="text-align:left"><h3>${escape(t.title)}</h3><div class="small-muted">Posted: ${t.posted} • Due: ${t.due} • ${t.category}</div><p class="mt-2">${escape(t.desc)}</p>
+  <div class="mt-3"><input id="bidMsgBox" placeholder="Your proposal..." class="w-full px-3 py-2 rounded-md bg-white/5" /><input id="bidAmtBox" placeholder="Bid amount (Ksh)" class="w-full mt-2 px-3 py-2 rounded-md bg-white/5" /></div>
+  <div class="mt-3 flex gap-2"><button class="px-3 py-2 bg-indigo-600 rounded-md" onclick="placeBid('${id}')">Place Bid (Ksh.150 fee)</button><button class="px-3 py-2 bg-gray-600 rounded-md" onclick="closeModal()">Close</button></div>
+  <div class="mt-4"><h4 class="font-semibold">Bidders</h4>${bidders || '<div class="small-muted">No bids</div>'}</div></div>`;
+            showModal(html);
+        }
+
+        function placeBid(taskId) {
+            const msg = document.getElementById('bidMsgBox').value.trim();
+            const amt = Number(document.getElementById('bidAmtBox').value || 0);
+            if (!msg || !amt) return alert('Enter bid message and amount');
+            attemptBid(taskId);
+            // if bid was accepted by attemptBid (deduct), record real bid
+            const bids = read(KEY.BIDS);
+            const cur = currentUser();
+            bids.push({
+                id: 'b_' + Date.now(),
+                taskId,
+                userId: cur.id,
+                amount: amt,
+                message: msg
+            });
+            write(KEY.BIDS, bids);
+            closeModal();
+        }
+
+        /* -------------------------
+           Helpers
+           ------------------------- */
+        function escape(s = '') {
+            return ('' + s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": "&#39;"
+            } [c]))
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+
+        function getUserName(id) {
+            const u = read(KEY.USERS).find(x => x.id === id);
+            return u ? u.name : 'User'
+        }
+
+        /* -------------------------
+           Auth UI (quick local register/login)
+           ------------------------- */
+        function openAuth(mode = 'register') {
+            const html = `<div style="text-align:left"><h3>${mode==='register' ? 'Register' : 'Login'}</h3>
+  ${mode==='register' ? '<input id="a_name" placeholder="Full name" class="w-full px-3 py-2 rounded-md bg-white/5 mt-2" />' : ''}
+  <input id="a_email" placeholder="Email" class="w-full px-3 py-2 rounded-md bg-white/5 mt-2" />
+  <input id="a_phone" placeholder="Phone (254...)" class="w-full px-3 py-2 rounded-md bg-white/5 mt-2" />
+  <input id="a_pass" placeholder="Password" type="password" class="w-full px-3 py-2 rounded-md bg-white/5 mt-2" />
+  <div class="mt-3 flex gap-2"><button class="px-3 py-2 bg-indigo-600 rounded-md" onclick="submitAuth('${mode}')">${mode==='register' ? 'Register' : 'Login'}</button><button class="px-3 py-2 bg-gray-600 rounded-md" onclick="closeModal()">Cancel</button></div></div>`;
+            showModal(html);
+        }
+
+        function submitAuth(mode) {
+            const email = document.getElementById('a_email').value.trim();
+            const phone = document.getElementById('a_phone').value.trim();
+            const pass = document.getElementById('a_pass').value;
+            if (!email || !phone || !pass) return alert('Fill fields');
+            let users = read(KEY.USERS);
+            if (mode === 'register') {
+                const name = document.getElementById('a_name').value.trim() || 'New User';
+                const id = 'u_' + Date.now().toString(36).slice(4, 10);
+                const u = {
+                    id,
+                    name,
+                    email,
+                    phone,
+                    password: pass,
+                    wallet: 0,
+                    verified: false,
+                    xp: 0,
+                    badges: []
+                };
+                users.push(u);
+                write(KEY.USERS, users);
+                setCurrentUser(u);
+                closeModal();
+                showModal(`<div style="text-align:center"><h3>Registered</h3><p class="small-muted">To verify, pay Ksh.100 to Till: 6806157 and then refresh or mark verified in profile (demo)</p><button class="mt-3 px-3 py-2 bg-green-600 rounded-md" onclick="closeModal()">OK</button></div>`);
+            } else {
+                const found = users.find(x => x.email === email && x.password === pass);
+                if (!found) return alert('Invalid credentials');
+                setCurrentUser(found);
+                closeModal();
+            }
+        }
+
+        /* -------------------------
+           Wallet/Profile/Analytics renderers
+           ------------------------- */
+        function renderWallet() {
+            document.getElementById('walletBalance').innerText = 'Ksh.' + (currentUser()?.wallet || 0);
+            document.getElementById('quickWallet').innerText = 'Ksh.' + (currentUser()?.wallet || 0);
+        }
+
+        function renderProfile() {
+            renderProfileUI();
+            renderAnalytics();
+        }
+
+        function renderProfileUI() {
+            const cur = currentUser();
+            if (cur) {
+                const f = document.getElementById('profileForm');
+                f.name.value = cur.name || '';
+                f.email.value = cur.email || '';
+                f.phone.value = cur.phone || '';
+                f.bio.value = cur.bio || '';
+                f.category.value = cur.category || 'Development';
+                document.getElementById('currentUserDisplay').innerText = cur.name;
+                document.getElementById('xpFill').style.width = Math.min(100, (cur.xp || 0) / 5) + '%';
+            } else {
+                document.getElementById('profileForm').reset();
+                document.getElementById('currentUserDisplay').innerText = 'Guest';
+            }
+        }
+
+        function renderAnalytics() {
+            renderProfileUI();
+            renderWallet();
+            renderTasks();
+            renderMessages();
+            renderCommunity();
+            renderClients();
+        }
+
+        /* -------------------------
+           Small startup: show home after loading
+           ------------------------- */
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('app').classList.remove('hidden');
+                // if no current user, set demo user as current (for demo convenience)
+                const cur = currentUser();
+                if (!cur) {
+                    const users = read(KEY.USERS);
+                    if (users.length) setCurrentUser(users[0]);
+                } else setCurrentUser(cur);
+                renderAnalytics();
+            }, 2600);
+        });
+
+        /* -------------------------
+           Utilities for UI actions referenced earlier
+           ------------------------- */
+        window.nav = nav;
+        window.copyTill = copyTill;
+        window.openTopUp = openTopUp;
+        window.openAuth = openAuth;
+        window.submitAuth = submitAuth;
+        window.viewTask = viewTask;
+        window.attemptBid = attemptBid;
+        window.placeBid = placeBid;
+        window.postCommunity = postCommunity;
+        window.logout = logout;
+        window.renderTasks = renderTasks;
+
+        /* -------------------------
+           Theme toggle
+           ------------------------- */
+        function toggleTheme() {
+            document.body.classList.toggle('bg-black');
+        }
+        document.getElementById('toggleTheme').addEventListener('click', () => {
+            toggleTheme();
+        });
+
+        /* -------------------------
+           Tiny helpers for profile save & logout
+           ------------------------- */
+        function saveProfile() {
+            const f = document.getElementById('profileForm');
+            const users = read(KEY.USERS);
+            const cur = currentUser();
+            if (!cur) return alert('login');
+            const idx = users.findIndex(u => u.id === cur.id);
+            users[idx] = {
+                ...users[idx],
+                name: f.name.value,
+                email: f.email.value,
+                phone: f.phone.value,
+                category: f.category.value,
+                bio: f.bio.value
+            };
+            write(KEY.USERS, users);
+            setCurrentUser(users[idx]);
+            showModal('<div style="text-align:center"><h3>Saved</h3></div>', 1200)
+        }
+
+        function renderMessages() {
+            /* called earlier */
+        }
+
+        /* -------------------------
+           Render initial tasks
+           ------------------------- */
+        renderTasks();
+    </script>
+</body>
+
+</html>
